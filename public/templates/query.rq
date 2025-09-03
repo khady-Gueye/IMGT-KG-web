@@ -1,0 +1,44 @@
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX faldo: <http://biohackathon.org/resource/faldo#>
+PREFIX obo: <http://purl.obolibrary.org/obo/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX ncit: <http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#>
+PREFIX imgt: <https://www.imgt.org/imgt-ontology#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX bao: <http://www.bioassayontology.org/bao#>
+
+SELECT DISTINCT ?subject ?relation ?object WHERE {
+  VALUES ?mab { __VALUES__ }
+
+  {
+    ?mab ?relation ?object .
+    BIND(?mab AS ?subject)
+  }
+  UNION {
+    ?s imgt:isTargetOf ?mab ;
+          rdfs:label ?subject;
+          ?relation ?object .
+  }
+  UNION {
+    ?subject imgt:isConstructOf ?mab ;
+             ?relation ?object .
+  }
+  UNION {
+    ?mab bao:BAO_0000196 ?subject .
+    ?subject ?relation ?object .
+  }
+  UNION {
+    ?product imgt:isProductOf ?mab .
+    ?subject (
+      imgt:isProductOf |
+      imgt:isStudyProductOf |
+      imgt:isDecisionOf
+    )+ ?mab .
+    ?subject ?relation ?object .
+  }
+
+  FILTER (
+    !REGEX(STR(?relation), "link|pharm|list|rdf-schema|skos|foaf|has_rank|commun_name")
+  )
+}
