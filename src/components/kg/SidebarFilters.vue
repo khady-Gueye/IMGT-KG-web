@@ -8,7 +8,7 @@
       :searchable="false"
       :close-on-select="true"
       :show-labels="false"
-      placeholder="Choisir le type d'exploration"
+      placeholder="Select exploration type"
       label="label"
       track-by="value"
       :multiple="false"
@@ -50,7 +50,7 @@ import { nodeColor, type NodeType } from '@/utils/Fonctions'
 import Multiselect from 'vue-multiselect'
 /* eslint-disable */
 const props = defineProps({
-  entityTypes: Array,
+  entityTypes: Array<string>,
   selectedTypes: Array,
   showRelations: Boolean,
   focusType: String
@@ -61,9 +61,9 @@ const emit = defineEmits(['update:selectedTypes', 'update:showRelations', 'updat
 
 // Options focusType disponibles
 const focusOptions = [
-  { label: 'Monoclonal Antibody', value: 'mAb' },
-  { label: 'Target', value: 'Target' },
-  { label: 'Mode of Action', value: 'MOA' },
+  { label: 'Exploration Centered to MAB', value: 'mAb' },
+  { label: 'Exploration Centered to Target', value: 'Target' },
+  { label: 'Exploration Centered to MOA', value: 'MOA' },
 ]
 // Pour le multiselect, on stocke l'objet complet
 const localFocusType = ref(
@@ -82,7 +82,7 @@ watch(
   () => props.selectedTypes,
   val => {
     if (JSON.stringify(val) !== JSON.stringify(localSelectedTypes.value)) {
-      localSelectedTypes.value = [...val]
+      localSelectedTypes.value = Array.isArray(val) ? [...val] : []
     }
   }
 )
@@ -114,7 +114,7 @@ function getColor(type: string) {
 }
 
 .sidebar-title {
-  color: #d7263d;
+  color: #333;
   font-size: 1.3rem;
   margin-bottom: 1.5rem;
 }

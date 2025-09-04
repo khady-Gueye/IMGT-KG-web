@@ -147,7 +147,7 @@
                 :key="index"
                 class="profil mx-auto"
                 title=""
-                style="width: min-width:100px; min-height: 100px; padding: 20px; border-radius: 15px;"
+                style="min-width: 100px; min-height: 100px; padding: 20px; border-radius: 15px;"
               >
                 <v-card-item class="text-center">
                   <v-avatar class="mx-auto text-center" size="80" :image="profil.avatar"></v-avatar>
@@ -203,7 +203,7 @@ import imgUrl from '@/assets/IMGT-KG.svg'
 
 const profiles = ref([
   {
-    avatar: 'Image/1571773098456.jpeg',
+    avatar: 'https://cdn-icons-png.flaticon.com/512/5577/5577995.png',
     name: 'Gaoussou Sanou',
     statuts: ['PhD Student'],
     linkedin: 'https://www.linkedin.com/in/gaoussou-sanou-78982413b/',

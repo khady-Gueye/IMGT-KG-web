@@ -54,20 +54,61 @@
         :options="currentExplorationConfig.optionsRef.value"
         :multiple="true"
         :searchable="true"
-        :placeholder="`Sélectionnez un ou plusieurs ${currentExplorationConfig.label}`"
+        :placeholder="`Select one or more ${currentExplorationConfig.label}`"
         label="label"
         track-by="id"
         :close-on-select="false"
       />
     </div>
+    <div class="graph-toolbar">
+  <v-btn density="comfortable" icon title="Zoom +"
+         @click="graphApi?.zoomIn?.()">
+    <v-icon>mdi-magnify-plus</v-icon>
+  </v-btn>
+  <v-btn density="comfortable" icon title="Zoom −"
+         @click="graphApi?.zoomOut?.()">
+    <v-icon>mdi-magnify-minus</v-icon>
+  </v-btn>
+  <v-btn density="comfortable" icon title="Fit to Content"
+         @click="graphApi?.fit?.()">
+    <v-icon>mdi-aspect-ratio</v-icon>
+  </v-btn>
+  <v-btn density="comfortable" icon title="Initial View"
+         @click="graphApi?.resetView?.()">
+    <v-icon>mdi-refresh</v-icon>
+  </v-btn>
 
-    <GraphDisplay
-      v-if="filteredResults.length"
-      :triples="filteredResults"
-      :showRelations="showRelationLabels"
-      @node-click="handleShowDoc"
+  <v-divider vertical class="mx-2" />
+
+  <v-btn density="comfortable" variant="tonal" prepend-icon="mdi-image"
+         @click="exportGraphPng">
+    PNG
+  </v-btn>
+  <v-btn density="comfortable" variant="tonal" prepend-icon="mdi-code-json"
+         @click="exportGraphJson">
+    JSON
+  </v-btn>
+</div>
+
+<GraphDisplay
+  v-if="filteredResults.length && currentNav === 'imgt-mab-kg'"
+  :triples="filteredResults"
+  :showRelations="showRelationLabels"
+  @node-click="handleShowDoc"
+  @register-api="onGraphApi"
     />
 
+<!-- Toolbar du tableau -->
+<div class="table-toolbar" v-if="filteredResults.length">
+  <v-btn density="comfortable" variant="tonal" prepend-icon="mdi-table-arrow-down"
+         @click="exportTableCsv">
+    Export CSV
+  </v-btn>
+  <v-btn density="comfortable" variant="tonal" prepend-icon="mdi-code-json"
+         @click="exportTableJson">
+    Export JSON
+  </v-btn>
+</div>
     <!-- Tableau des résultats -->
     <div class="table-section" v-if="filteredResults.length">
       <div class="section-header" @click="toggleTableDropdown">
@@ -520,6 +561,71 @@ watch(selectedEntity, async (val) => {
   }
 })
 
+type GraphApi = {
+  zoomIn?: () => void
+  zoomOut?: () => void
+  fit?: () => void
+  resetView?: () => void
+  exportPng?: () => Promise<string> // dataURL (image/png)
+  getData?: () => { nodes: any[]; edges: any[] }
+}
+
+const graphRef = ref<any>(null)
+const graphApi = ref<GraphApi | null>(null)
+function onGraphApi(api: GraphApi) {
+  graphApi.value = api
+}
+
+/* ===== Exports TABLE ===== */
+function exportTableCsv() {
+  if (!filteredResults.value.length) return
+  const rows = [
+    ['subject', 'relation', 'object', 'type'],
+    ...filteredResults.value.map(r => [r.subject, r.relation, r.object, r.type ?? ''])
+  ]
+  const csv = rows.map(r => r.map(escapeCsv).join(',')).join('\n')
+  downloadBlob(csv, 'text/csv;charset=utf-8', 'results.csv')
+}
+function exportTableJson() {
+  const json = JSON.stringify(filteredResults.value, null, 2)
+  downloadBlob(json, 'application/json', 'results.json')
+}
+
+/* ===== Exports GRAPH ===== */
+async function exportGraphPng() {
+  if (!graphApi.value?.exportPng) {
+    console.warn('exportPng non fourni par GraphDisplay')
+    return
+  }
+  const dataUrl = await graphApi.value.exportPng()
+  downloadDataUrl(dataUrl, 'graph.png')
+}
+function exportGraphJson() {
+  const data = graphApi.value?.getData?.()
+  const payload = data ?? { triples: filteredResults.value }
+  downloadBlob(JSON.stringify(payload, null, 2), 'application/json', 'graph.json')
+}
+
+/* ===== Helpers ===== */
+function escapeCsv(v: string) {
+  if (v == null) return ''
+  const s = String(v)
+  return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s
+}
+function downloadBlob(content: string, mime: string, filename: string) {
+  const blob = new Blob([content], { type: mime })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url; a.download = filename
+  document.body.appendChild(a); a.click()
+  a.remove(); URL.revokeObjectURL(url)
+}
+function downloadDataUrl(dataUrl: string, filename: string) {
+  const a = document.createElement('a')
+  a.href = dataUrl; a.download = filename
+  document.body.appendChild(a); a.click()
+  a.remove()
+}
 
 
 
@@ -704,5 +810,13 @@ watch(selectedEntity, async (val) => {
   padding: 2rem 3rem;
   overflow-y: auto;
 }
+.graph-toolbar,
+.table-toolbar {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  margin: 0 0 1rem 0;
+}
+
 
 </style>
