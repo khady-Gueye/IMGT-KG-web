@@ -1,15 +1,15 @@
 <template>
-   <v-app id="inspire">
-  <AppHeader />
-  <TabsNavigation
-    :tabs="tabs"
-    :currentTab="currentTab"
-    @change-tab="currentTab = $event"
-  />
-  <v-main>
-  <main class="main-content">
-    <component :is="currentView" @jump-to-explore="onJumpToExplore"/>
-  </main>
+  <v-app id="inspire">
+ <AppHeader />
+ <TabsNavigation
+   :tabs="tabs"
+   :currentTab="currentTab"
+   @change-tab="currentTab = $event"
+ />
+ <v-main>
+ <main class="main-content">
+   <component :is="currentView" @jump-to-explore="onJumpToExplore"/>
+ </main>
 </v-main>
 </v-app>
 </template>
@@ -27,34 +27,34 @@ import { useExploreStore } from './store/explore'
 import { nextTick } from 'vue'
 // Définition des onglets
 const tabs = [
-  { id: 'home', label: 'Home', component: HomeCover },
-  { id: 'explore', label: 'Explore', component: GraphWorkspace },
-  { id: 'kgDesc', label: 'IMGT-KG-DESCRIPTION', component: KgDesc }, // 
-  { id: 'access', label: 'IMGT-KG Access',      component: AccessWorkspace }, // ⬅️ NEW
+ { id: 'home', label: 'Home', component: HomeCover },
+ { id: 'explore', label: 'Exploration', component: GraphWorkspace },
+ { id: 'kgDesc', label: 'Description', component: KgDesc }, // 
+ { id: 'access', label: 'Access',      component: AccessWorkspace }, // ⬅️ NEW
 ]
 
 const currentTab = ref('home')
 
 // Calcul du composant à afficher
 const currentView = computed(() =>
-  tabs.find(tab => tab.id === currentTab.value)?.component || HomeCover
+ tabs.find(tab => tab.id === currentTab.value)?.component || HomeCover
 )
 
 const exploreStore = useExploreStore()
 
 function onJumpToExplore(payload?: { entity?: string }) {
-  exploreStore.setEntity(payload?.entity ?? null) // mémorise l’entité
-  currentTab.value = 'explore'                    // va sur Explore
-  nextTick(() => window.scrollTo({ top: 0, behavior: 'smooth' }))
+ exploreStore.setEntity(payload?.entity ?? null) // mémorise l’entité
+ currentTab.value = 'explore'                    // va sur Explore
+ nextTick(() => window.scrollTo({ top: 0, behavior: 'smooth' }))
 }
 </script>
 
 <style scoped>
 .main-content {
-  width: 100vw;
-  min-height: 90vh;
-  margin: 0;
-  padding: 0;
-  background: #fff;
+ width: 100vw;
+ min-height: 90vh;
+ margin: 0;
+ padding: 0;
+ background: #fff;
 }
 </style>
