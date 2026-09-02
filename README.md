@@ -1,77 +1,76 @@
 # IMGT-KG-web
 
-Interface web d'exploration et de visualisation des graphes de connaissances en immunogénétique **IMGT/mAb-KG** et **IMGT-KG**. Développée dans le cadre de mon stage de M2 Bioinformatique à l'IMGT (Institut de Génétique Humaine, CNRS, Montpellier), elle vise à rendre les graphes de connaissances liés aux anticorps monoclonaux thérapeutiques accessibles aux chercheurs, y compris ceux non familiers avec le web sémantique et les requêtes SPARQL.
+Web interface for exploring and visualizing the **IMGT/mAb-KG** and **IMGT-KG** immunogenetics knowledge graphs. Built during my M2 Bioinformatics internship at IMGT (Institut de Génétique Humaine, CNRS, Montpellier), it aims to make knowledge graphs related to therapeutic monoclonal antibodies accessible to researchers, including those unfamiliar with the semantic web and SPARQL queries.
 
-Contrairement aux interfaces existantes d'IMGT (une par graphe, technologies différentes), cette interface unifie l'accès aux deux ressources dans une expérience unique, avec une visualisation de graphe interactive et une lecture tabulaire synchronisée des données.
+Unlike IMGT's existing interfaces (one per graph, built with different technologies), this interface unifies access to both resources in a single experience, combining an interactive graph visualization with a synchronized tabular view of the data.
 
-## Fonctionnalités Clés
+## Key Features
 
-* **Recherche centrée sur une entité** : exploration d'un anticorps monoclonal (mAb) et de toutes ses relations (cible, structure, produits pharmaceutiques, mécanisme d'action).
-* **Visualisation de graphe interactive** : affichage des entités et relations sous forme de graphe navigable (zoom, déplacement, sélection de nœuds) via `vis-network`.
-* **Tableau RDF synchronisé** : liste détaillée des triplets (sujet, prédicat, objet) associée au graphe, mise à jour en temps réel.
-* **Filtrage dynamique** : sélection des types d'entités à afficher (mAb, Target, Construct, Product, MOA) par cases à cocher, sans écrire de requête SPARQL.
-* **Génération de requêtes SPARQL** : traduction automatique de la recherche utilisateur en requêtes interrogeant l'endpoint IMGT/mAb-KG.
-* **Architecture modulaire** : composants Vue.js indépendants et réutilisables, pensés pour une extension future à IMGT-KG.
+* **Entity-centered search**: explore a monoclonal antibody (mAb) and all its relations (target, structure, pharmaceutical products, mechanism of action).
+* **Interactive graph visualization**: entities and relations displayed as a navigable graph (zoom, pan, node selection) via `vis-network`.
+* **Synchronized RDF table**: detailed list of triples (subject, predicate, object) linked to the graph, updated in real time.
+* **Dynamic filtering**: select which entity types to display (mAb, Target, Construct, Product, MOA) via checkboxes, with no need to write SPARQL.
+* **SPARQL query generation**: automatic translation of the user's search into queries against the IMGT/mAb-KG endpoint.
+* **Modular architecture**: independent, reusable Vue.js components, designed to allow future extension to IMGT-KG.
 
 ## Architecture
 
-Le projet est construit avec **Vue.js 3** (Composition API, `<script setup lang="ts">`) et **TypeScript**, pour une interface typée, modulaire et évolutive.
+The project is built with **Vue.js 3** (Composition API, `<script setup lang="ts">`) and **TypeScript**, for a typed, modular and scalable interface.
 
-**Stack technique**
-* `Vue 3` + `Vue CLI` — framework et outillage front-end
-* `TypeScript` — typage statique (triplets RDF, types d'entités, nœuds de graphe)
-* `vis-network` — bibliothèque de visualisation de graphes interactifs
-* `axios` — requêtes HTTP vers l'endpoint SPARQL IMGT/mAb-KG
+**Tech stack**
+* `Vue 3` + `Vue CLI` — front-end framework and tooling
+* `TypeScript` — static typing (RDF triples, entity types, graph nodes)
+* `vis-network` — interactive graph visualization library
+* `axios` — HTTP requests to the IMGT/mAb-KG SPARQL endpoint
 
-**Composants principaux**
-* `App.vue` : navigation et agencement général de l'interface
-* `SidebarNav.vue` : navigation latérale entre les graphes IMGT/mAb-KG et IMGT-KG
-* `SidebarFilters.vue` : filtres dynamiques par type d'entité
-* `GraphWorkspace.vue` : composant central — recherche, affichage des résultats et du tableau de données
-* `GraphDisplay.vue` : rendu du graphe interactif via `vis-network`
-* `HomeCover.vue` : écran d'accueil affiché en l'absence de résultats
-* `Fonctions.ts` : fonctions utilitaires centralisant les appels SPARQL, le parsing et le typage des données
+**Main components**
+* `App.vue`: navigation and overall layout of the interface
+* `SidebarNav.vue`: side navigation between the IMGT/mAb-KG and IMGT-KG graphs
+* `SidebarFilters.vue`: dynamic filters by entity type
+* `GraphWorkspace.vue`: central component — search, results display and data table
+* `GraphDisplay.vue`: renders the interactive graph via `vis-network`
+* `HomeCover.vue`: home screen shown when there are no results
+* `Fonctions.ts`: utility functions centralizing SPARQL calls, parsing and data typing
 
-**Pipeline de traitement**
+**Processing pipeline**
 
 ```
-Saisie utilisateur
+User input
       │
       ▼
-Génération de la requête SPARQL
+SPARQL query generation
       │
       ▼
-Envoi à l'endpoint IMGT/mAb-KG
+Request sent to the IMGT/mAb-KG endpoint
       │
       ▼
-Récupération des résultats (CSV)
+Results retrieval (CSV)
       │
       ▼
-Parsing & typage des triplets
+Triple parsing & typing
       │
       ▼
-Filtrage dynamique par type d'entité
+Dynamic filtering by entity type
       │
       ▼
-Affichage : tableau RDF + graphe interactif
+Display: RDF table + interactive graph
 ```
 
-## Démonstration Vidéo
+## Video Demo
 
+[Watch the demo video](video/demo_video.mp4)
 
-[Visionner la vidéo de démonstration](./video/demo_video.mp4demo_video.mp4)
+## Resources
 
-## Ressources
-
-* Rapport de stage : *Développement d'une interface web unifiée pour l'exploitation des graphes de connaissances IMGT-KG en immunogénétique* (M2 Bioinformatique, Université de Montpellier, 2025)
+* Internship report: *Development of a unified web interface for exploiting the IMGT-KG knowledge graphs in immunogenetics* (M2 Bioinformatics, University of Montpellier, 2025)
 * [IMGT/mAb-KG](https://imgt.org/mAb-KG/)
 * [IMGT-KG](https://www.imgt.org/imgt-kg/)
 
-## Utilisation
+## Usage
 
-### Prérequis
+### Requirements
 
-* Node.js et npm
+* Node.js and npm
 
 ### Installation
 
@@ -79,13 +78,13 @@ Affichage : tableau RDF + graphe interactif
 npm install
 ```
 
-### Lancement en développement
+### Run in development mode
 
 ```
 npm run serve
 ```
 
-### Build de production
+### Production build
 
 ```
 npm run build
