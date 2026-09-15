@@ -16,7 +16,6 @@ declare const am5percent: any;
 declare const am5themes_Animated: any;
 
 
-
 type DataPoint = { category: string; value: number }
 
 function getAm() {

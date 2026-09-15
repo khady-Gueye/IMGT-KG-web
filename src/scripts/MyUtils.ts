@@ -7,8 +7,6 @@ declare const am5percent: any;
 declare const am5themes_Animated: any;
 
 
-
-
 /* eslint-disable */
 
 // On attache les fonctions au window pour conserver le même usage global
