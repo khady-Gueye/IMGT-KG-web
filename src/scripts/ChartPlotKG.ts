@@ -14,10 +14,6 @@ import am5themes_Animated from "@amcharts/amcharts5/themes/Animated"
 
 
 
-// ❌ Enlève tout window.addEventListener('load', ...)
-// ✅ Laisse le code s’exécuter immédiatement (comme avant dans ton .js)
-
-
 type DataPoint = { category: string; value: number }
 
 function getAm() {

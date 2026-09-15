@@ -16,9 +16,6 @@ declare const am5percent: any;
 declare const am5themes_Animated: any;
 
 
-// ❌ Enlève tout window.addEventListener('load', ...)
-// ✅ Laisse le code s’exécuter immédiatement (comme avant dans ton .js)
-
 
 type DataPoint = { category: string; value: number }
 
